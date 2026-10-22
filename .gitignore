@@ -1,0 +1,7 @@
+fastapienv/
+__pycache__/
+*.py[cod]
+.idea/
+.venv/
+venv/
+.env
