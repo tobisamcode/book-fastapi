@@ -20,11 +20,22 @@ class Book:
         self.rating = rating
 
 class BookRequest (BaseModel):
-    id: Optional[int] = None
+    id: Optional[int] = Field(description="Book ID is not needed on create", default=None)
     title: str = Field(min_length=3)
     author: str = Field(min_length=1)
     description: str = Field(min_length=1, max_length=100)
     rating: int = Field(gt=-1, lt=6 )
+
+    model_config = {
+        "json_schema_extra": {
+            "example": {
+                "title": "A very nice book",
+                "author": "codingwithtobi",
+                "description": "A very good book",
+                "rating": 3,
+            }
+        }
+    }
 
 BOOKS =[
     Book(1, "Computer Science Pro", "codingwithtobi", "A very good book", 1),
