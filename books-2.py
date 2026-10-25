@@ -1,6 +1,6 @@
 from typing import Optional
 
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel, Field
 
 app = FastAPI()
@@ -84,7 +84,7 @@ class BooksResponse(BaseModel):
     }
 
 BOOKS =[
-    Book(1, "Computer Science Pro", "codingwithtobi", "A very good book", 1, 2026      ,),
+    Book(1, "Computer Science Pro", "codingwithtobi", "A very good book", 1, 2026),
     Book(2, "Mathematics", "codingwithtobi", "A very nice book", 4, 2020),
     Book(3, "Computer Science Lite", "codingwithtobi", "A very awesome book", 1, 2021),
     Book(4, "MATH Science ", "codingwithtobi", "A very good book", 5, 2025),
@@ -109,7 +109,7 @@ async def show_book(book_id: int):
     for book in BOOKS:
         if book.id == book_id:
             return {"book": book}
-    return None
+    raise HTTPException(status_code=404, detail="Book not found")
 
 @app.post("/books/create")
 async def create_book(request: BookRequest):
@@ -125,7 +125,7 @@ async def update_book(book_id: int, request: BookRequest):
             updated_book.id = book_id
             BOOKS[index] = updated_book
             return {"message": "Book updated successfully", "data": updated_book}
-    return None
+    raise HTTPException(status_code=404, detail="Book not found")
 
 @app.delete("/books/{book_id}")
 async def delete_book(book_id: int):
@@ -133,7 +133,7 @@ async def delete_book(book_id: int):
         if book.id == book_id:
             BOOKS.pop(index)
             return {"message": "Book deleted successfully"}
-    return None
+    raise HTTPException(status_code=404, detail="Book not found")
 
 def find_book_id(book: Book):
     book.id = 1 if len(BOOKS) == 0 else BOOKS[-1].id + 1
